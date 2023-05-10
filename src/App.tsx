@@ -2,7 +2,13 @@ import React, {useState} from 'react';
 import {View, Text, TouchableOpacity} from 'react-native';
 import ShoppingCart, {CartItem} from './ShoppingCart';
 import {styles} from './App.styles';
-
+import 'noibu-js/noibujs-dev';
+import {ErrorBoundary} from 'noibu-react';
+setTimeout(() => {
+  new Promise((resolve, reject) => {
+    reject(new Error('standard promise rejection'));
+  });
+}, 5000);
 interface Item {
   id: number;
   name: string;
@@ -59,36 +65,83 @@ export default function App() {
     cartItems.reduce((total, item) => total + item.quantity, 0);
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Welcome to My Store</Text>
+    <ErrorBoundary
+      fallback={() => (
+        <View>
+          <Text>Oh no!</Text>
+        </View>
+      )}>
+      <View style={styles.container}>
         <TouchableOpacity
-          onPress={() => setShowCart(true)}
-          style={styles.cartButton}>
-          <Text style={styles.cartButtonText}>🛒 {calculateItemsInCart()} items</Text>
+          style={{zIndex: 100}}
+          onPress={e =>
+            console.log('Touch happened', {
+              x: e.nativeEvent.locationX,
+              y: e.nativeEvent.locationY,
+            })
+          }>
+          <View>
+            <View style={styles.header}>
+              <Text style={styles.title}>Welcome to My Store</Text>
+              <TouchableOpacity
+                onPress={() => {
+                  setShowCart(true);
+                }}
+                style={styles.cartButton}>
+                <Text style={styles.cartButtonText}>
+                  🛒 {calculateItemsInCart()} items
+                </Text>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.itemsContainer}>
+              {items.map(item => (
+                <View key={item.id} style={styles.item}>
+                  <Text style={styles.itemName}>{item.name}</Text>
+                  <Text style={styles.itemPrice}>${item.price}</Text>
+                  <TouchableOpacity
+                    onPress={() => handleBuy(item.id)}
+                    style={styles.buyButton}>
+                    <Text style={styles.whiteText}>Buy</Text>
+                  </TouchableOpacity>
+                </View>
+              ))}
+            </View>
+            <View style={styles.itemsContainer}>
+              <TouchableOpacity
+                style={styles.buyButton}
+                onPress={() => window.NOIBUJS.requestHelpCode()}>
+                <Text style={styles.whiteText}>
+                  Flush all events to metroplex
+                </Text>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.itemsContainer}>
+              <Text style={{fontSize: 15}}>
+                HermesInternal.hasPromise():{' '}
+                {globalThis.HermesInternal.hasPromise() && 'true'}
+              </Text>
+            </View>
+
+            <View style={styles.itemsContainer}>
+              <TouchableOpacity
+                onPress={() => {
+                  throw new Error('simulated react error');
+                }}
+                style={styles.buyButton}>
+                <Text style={styles.whiteText}>simulate react error</Text>
+              </TouchableOpacity>
+            </View>
+            {showCart && (
+              <ShoppingCart
+                cartItems={cartItems}
+                handleRemoveFromCart={handleRemoveFromCart}
+                calculateTotal={calculateTotal}
+                onClose={() => setShowCart(false)}
+              />
+            )}
+          </View>
         </TouchableOpacity>
       </View>
-      <View style={styles.itemsContainer}>
-        {items.map(item => (
-          <View key={item.id} style={styles.item}>
-            <Text style={styles.itemName}>{item.name}</Text>
-            <Text style={styles.itemPrice}>${item.price}</Text>
-            <TouchableOpacity
-              onPress={() => handleBuy(item.id)}
-              style={styles.buyButton}>
-              <Text style={styles.buyButtonText}>Buy</Text>
-            </TouchableOpacity>
-          </View>
-        ))}
-      </View>
-      {showCart && (
-        <ShoppingCart
-          cartItems={cartItems}
-          handleRemoveFromCart={handleRemoveFromCart}
-          calculateTotal={calculateTotal}
-          onClose={() => setShowCart(false)}
-        />
-      )}
-    </View>
+    </ErrorBoundary>
   );
 }

@@ -54,12 +54,12 @@ export const styles = StyleSheet.create({
   buyButton: {
     backgroundColor: '#FF6464',
     borderRadius: 50,
-    width: 70,
-    height: 30,
+    padding: 10,
+    margin: 10,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  buyButtonText: {
+  whiteText: {
     color: 'white',
     fontWeight: 'bold',
   },

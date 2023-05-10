@@ -12,7 +12,10 @@
   },
   "dependencies": {
     "react": "18.2.0",
-    "react-native": "0.71.7"
+    "react-native": "0.71.7",
+    "noibu-react": "1.0.10",
+    "react-native-url-polyfill": "1.3.0",
+    "noibu-js": "file:///Users/victor.m/IdeaProjects/unicron/fe/noibujs/dist/"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
