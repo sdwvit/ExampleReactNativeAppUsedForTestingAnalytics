@@ -5255,12 +5255,10 @@ node-stream-zip@^1.9.1:
 "noibu-js@file:../unicron/fe/noibujs/dist":
   version "0.0.0"
 
-noibu-react@1.0.10:
+"noibu-react@file:../unicron/public_sdk/javascript/react":
   version "1.0.10"
-  resolved "https://registry.yarnpkg.com/noibu-react/-/noibu-react-1.0.10.tgz#2edb309ca1ac9046b6bc6e95c655c04f16cc3af4"
-  integrity sha512-qna7EF9f/DyUtz28uAumUKwSq1WlVQQlSM0IPtrK7FBMLhzA5h5T8BYQAiwRmal3Ohkz4MYOfvhov2BVMi2icw==
   dependencies:
-    uuid "^9.0.0"
+    uuid "3.4.0"
 
 normalize-path@^3.0.0:
   version "3.0.0"
@@ -6735,10 +6733,10 @@ utils-merge@1.0.1:
   resolved "https://registry.yarnpkg.com/utils-merge/-/utils-merge-1.0.1.tgz#9f95710f50a267947b2ccc124741c1028427e713"
   integrity sha512-pMZTvIkT1d+TFGvDOqodOclx0QWkkgi6Tdoa8gC8ffGAAqz9pzPTZWAybbsHHoED/ztMtkv/VoYTYyShUn81hA==
 
-uuid@^9.0.0:
-  version "9.0.0"
-  resolved "https://registry.yarnpkg.com/uuid/-/uuid-9.0.0.tgz#592f550650024a38ceb0c562f2f6aa435761efb5"
-  integrity sha512-MXcSTerfPa4uqyzStbRoTgt5XIe3x5+42+q1sDuy3R5MDk66URdLMOZe5aPX/SQd+kuYAh0FdP/pO28IkQyTeg==
+uuid@3.4.0:
+  version "3.4.0"
+  resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.4.0.tgz#b23e4358afa8a202fe7a100af1f5f883f02007ee"
+  integrity sha512-HjSDRw6gZE5JMggctHBcjVak08+KEVhSIiDzFnT9S9aegmp85S/bReBVTb4QTFaRNptJ9kuYaNhnbNEOkbKb/A==
 
 v8-to-istanbul@^9.0.1:
   version "9.1.0"

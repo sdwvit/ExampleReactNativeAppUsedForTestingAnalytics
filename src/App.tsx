@@ -1,14 +1,20 @@
-import React, {useState} from 'react';
-import {View, Text, TouchableOpacity} from 'react-native';
+import React, { useState} from 'react';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  SafeAreaView,
+  ScrollView,
+  TouchableWithoutFeedback,
+  KeyboardAvoidingView,
+  Platform,
+} from 'react-native';
 import ShoppingCart, {CartItem} from './ShoppingCart';
 import {styles} from './App.styles';
 import 'noibu-js/noibujs-dev';
 import {ErrorBoundary} from 'noibu-react';
-setTimeout(() => {
-  new Promise((resolve, reject) => {
-    reject(new Error('standard promise rejection'));
-  });
-}, 5000);
+import InputView from './InputsView';
+
 interface Item {
   id: number;
   name: string;
@@ -23,7 +29,8 @@ export default function App() {
   ]);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [showCart, setShowCart] = useState<boolean>(false);
-
+  const [u, setU] = useState(0);
+  const update = () => setU(u + 1);
   const handleBuy = (id: number) => {
     const selectedItem = items.find(item => item.id === id);
     if (selectedItem) {
@@ -71,77 +78,111 @@ export default function App() {
           <Text>Oh no!</Text>
         </View>
       )}>
-      <View style={styles.container}>
-        <TouchableOpacity
-          style={{zIndex: 100}}
-          onPress={e =>
-            console.log('Touch happened', {
-              x: e.nativeEvent.locationX,
-              y: e.nativeEvent.locationY,
-            })
-          }>
-          <View>
-            <View style={styles.header}>
-              <Text style={styles.title}>Welcome to My Store</Text>
-              <TouchableOpacity
-                onPress={() => {
-                  setShowCart(true);
-                }}
-                style={styles.cartButton}>
-                <Text style={styles.cartButtonText}>
-                  🛒 {calculateItemsInCart()} items
+      <KeyboardAvoidingView
+        style={{flex: 1}}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+        <TouchableWithoutFeedback style={{zIndex: 100}}>
+          <SafeAreaView style={styles.container}>
+            <ScrollView>
+              <View style={styles.header}>
+                <Text style={styles.title}>Welcome to My Store</Text>
+                <TouchableOpacity
+                  onPress={() => {
+                    setShowCart(true);
+                  }}
+                  style={styles.cartButton}>
+                  <Text style={styles.cartButtonText}>
+                    🛒 {calculateItemsInCart()} items
+                  </Text>
+                </TouchableOpacity>
+              </View>
+              <View style={styles.itemsContainer}>
+                {items.map(item => (
+                  <View key={item.id} style={styles.item}>
+                    <Text style={styles.itemName}>{item.name}</Text>
+                    <Text style={styles.itemPrice}>${item.price}</Text>
+                    <TouchableOpacity
+                      onPress={() => handleBuy(item.id)}
+                      style={styles.buyButton}>
+                      <Text style={styles.whiteText}>Buy</Text>
+                    </TouchableOpacity>
+                  </View>
+                ))}
+              </View>
+              <View style={styles.itemsContainer}>
+                <TouchableOpacity
+                  style={styles.buyButton}
+                  onPress={() => window.NOIBUJS.requestHelpCode()}>
+                  <Text style={styles.whiteText}>
+                    Flush all events to metroplex
+                  </Text>
+                </TouchableOpacity>
+              </View>
+              <View style={styles.itemsContainer}>
+                <Text style={{fontSize: 15}}>
+                  HermesInternal.hasPromise():{' '}
+                  {globalThis.HermesInternal.hasPromise() ? 'true' : 'false'}
                 </Text>
-              </TouchableOpacity>
-            </View>
-            <View style={styles.itemsContainer}>
-              {items.map(item => (
-                <View key={item.id} style={styles.item}>
-                  <Text style={styles.itemName}>{item.name}</Text>
-                  <Text style={styles.itemPrice}>${item.price}</Text>
-                  <TouchableOpacity
-                    onPress={() => handleBuy(item.id)}
-                    style={styles.buyButton}>
-                    <Text style={styles.whiteText}>Buy</Text>
-                  </TouchableOpacity>
-                </View>
-              ))}
-            </View>
-            <View style={styles.itemsContainer}>
-              <TouchableOpacity
-                style={styles.buyButton}
-                onPress={() => window.NOIBUJS.requestHelpCode()}>
-                <Text style={styles.whiteText}>
-                  Flush all events to metroplex
+              </View>
+              <View style={styles.itemsContainer}>
+                <Text style={{fontSize: 15}}>
+                  Is WebSocket available? {window.WebSocket ? 'true' : 'false'}
                 </Text>
-              </TouchableOpacity>
-            </View>
-            <View style={styles.itemsContainer}>
-              <Text style={{fontSize: 15}}>
-                HermesInternal.hasPromise():{' '}
-                {globalThis.HermesInternal.hasPromise() && 'true'}
-              </Text>
-            </View>
+              </View>
 
-            <View style={styles.itemsContainer}>
-              <TouchableOpacity
-                onPress={() => {
-                  throw new Error('simulated react error');
-                }}
-                style={styles.buyButton}>
-                <Text style={styles.whiteText}>simulate react error</Text>
-              </TouchableOpacity>
-            </View>
-            {showCart && (
-              <ShoppingCart
-                cartItems={cartItems}
-                handleRemoveFromCart={handleRemoveFromCart}
-                calculateTotal={calculateTotal}
-                onClose={() => setShowCart(false)}
-              />
-            )}
-          </View>
-        </TouchableOpacity>
-      </View>
+              <View style={styles.itemsContainer}>
+                <TouchableOpacity
+                  onPress={() => {
+                    throw new Error('simulated react error');
+                  }}
+                  style={styles.buyButton}>
+                  <Text style={styles.whiteText}>simulate react error</Text>
+                </TouchableOpacity>
+              </View>
+              <View style={styles.itemsContainer}>
+                <TouchableOpacity
+                  onPress={() => {
+                    fetch('https://news.ycombinator.com/news')
+                      .then(r => r.text())
+                      .then(text => {
+                        console.log(`fetched ${text.length} or so bytes of html`);
+                      });
+                    setTimeout(
+                      () =>
+                        Promise.reject(new Error('standard promise rejection')),
+                      500,
+                    );
+                  }}
+                  style={styles.buyButton}>
+                  <Text style={styles.whiteText}>
+                    simulate an http call and an async promise rejection
+                  </Text>
+                </TouchableOpacity>
+              </View>
+              <View style={styles.itemsContainer}>
+                <TouchableOpacity
+                  onPress={() => {
+                    update();
+                  }}
+                  style={styles.buyButton}>
+                  <Text style={styles.whiteText}>Force update view</Text>
+                </TouchableOpacity>
+              </View>
+              {showCart && (
+                <ShoppingCart
+                  cartItems={cartItems}
+                  handleRemoveFromCart={handleRemoveFromCart}
+                  calculateTotal={calculateTotal}
+                  onClose={() => setShowCart(false)}
+                />
+              )}
+              <View style={styles.itemsContainer}>
+                <InputView />
+              </View>
+            </ScrollView>
+          </SafeAreaView>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
     </ErrorBoundary>
   );
 }
