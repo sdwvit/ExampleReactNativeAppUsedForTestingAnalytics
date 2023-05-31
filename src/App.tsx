@@ -1,4 +1,4 @@
-import React, { useState} from 'react';
+import React, {useState} from 'react';
 import {
   View,
   Text,
@@ -11,8 +11,8 @@ import {
 } from 'react-native';
 import ShoppingCart, {CartItem} from './ShoppingCart';
 import {styles} from './App.styles';
-import 'noibu-js/noibujs-dev';
-import {ErrorBoundary} from 'noibu-react';
+import 'noibu-js';
+import {ErrorBoundary} from 'noibu-js';
 import InputView from './InputsView';
 
 interface Item {
@@ -22,7 +22,7 @@ interface Item {
 }
 
 export default function App() {
-  const [items, setItems] = useState<Item[]>([
+  const [items] = useState<Item[]>([
     {id: 1, name: 'Product 1', price: 10},
     {id: 2, name: 'Product 2', price: 20},
     {id: 3, name: 'Product 3', price: 30},
@@ -145,7 +145,9 @@ export default function App() {
                     fetch('https://news.ycombinator.com/news')
                       .then(r => r.text())
                       .then(text => {
-                        console.log(`fetched ${text.length} or so bytes of html`);
+                        console.log(
+                          `fetched ${text.length} or so bytes of html`,
+                        );
                       });
                     setTimeout(
                       () =>

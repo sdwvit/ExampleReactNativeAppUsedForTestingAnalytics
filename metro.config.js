@@ -14,4 +14,9 @@ module.exports = {
       },
     }),
   },
+  resolver: {
+    resolverMainFields: ['module', 'main'], // Also see https://github.com/facebook/metro/issues/670
+    sourceExts: ['json', 'js', 'jsx', 'ts', 'tsx', 'cjs', 'mjs'],
+    assetExts: ['glb', 'gltf', 'png', 'jpg'],
+  },
 };
