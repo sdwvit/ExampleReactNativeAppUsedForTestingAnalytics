@@ -11,8 +11,7 @@ import {
 } from 'react-native';
 import ShoppingCart, {CartItem} from './ShoppingCart';
 import {styles} from './App.styles';
-import 'noibu-js';
-import {ErrorBoundary} from 'noibu-js';
+import {ErrorBoundary, NoibuJS} from 'noibu-js';
 import InputView from './InputsView';
 
 interface Item {
@@ -112,22 +111,11 @@ export default function App() {
               <View style={styles.itemsContainer}>
                 <TouchableOpacity
                   style={styles.buyButton}
-                  onPress={() => window.NOIBUJS.requestHelpCode()}>
+                  onPress={() => NoibuJS.requestHelpCode()}>
                   <Text style={styles.whiteText}>
                     Flush all events to metroplex
                   </Text>
                 </TouchableOpacity>
-              </View>
-              <View style={styles.itemsContainer}>
-                <Text style={{fontSize: 15}}>
-                  HermesInternal.hasPromise():{' '}
-                  {globalThis.HermesInternal.hasPromise() ? 'true' : 'false'}
-                </Text>
-              </View>
-              <View style={styles.itemsContainer}>
-                <Text style={{fontSize: 15}}>
-                  Is WebSocket available? {window.WebSocket ? 'true' : 'false'}
-                </Text>
               </View>
 
               <View style={styles.itemsContainer}>
