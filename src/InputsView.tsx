@@ -1,11 +1,5 @@
 import React, {useState} from 'react';
-import {
-  View,
-  TextInput,
-  Button,
-  Alert,
-  Text,
-} from 'react-native';
+import {View, TextInput, Button, Alert, Text} from 'react-native';
 
 const InputView = () => {
   const [inputText, setInputText] = useState('');
@@ -30,6 +24,7 @@ const InputView = () => {
         style={{borderWidth: 1, borderColor: 'gray', padding: 10}}
         onChangeText={setInputText}
         value={inputText}
+        placeholder={'This is a required prop'}
       />
       <Button title="Submit" onPress={handleSubmit} />
     </View>
