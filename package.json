@@ -8,7 +8,8 @@
     "lint": "eslint .",
     "ios:install": "cd ios && pod install",
     "start": "react-native start",
-    "test": "jest"
+    "test": "jest",
+    "onchange": "SDK=./../unicron/public_sdk/react-native;D=./node_modules/noibu-react-native/;rm -rf ${D}/dist/;mkdir ${D}/dist;cp -R ${SDK}/dist/ ${D}/dist;cp $SDK/package.json ${D};echo \"Updating $(date +%s)\""
   },
   "dependencies": {
     "react": "^18.2.0",
@@ -17,7 +18,7 @@
     "react-native-url-polyfill": "^1.3.0",
     "react-native-uuid": "^2.0.1",
     "stacktrace-parser": "^0.1.10",
-    "noibu-js": "file:./../unicron/public_sdk/react-native/"
+    "noibu-react-native": "file:./../unicron/public_sdk/react-native/"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import {
   View,
   Text,
@@ -8,10 +8,11 @@ import {
   TouchableWithoutFeedback,
   KeyboardAvoidingView,
   Platform,
+  Alert,
 } from 'react-native';
 import ShoppingCart, {CartItem} from './ShoppingCart';
 import {styles} from './App.styles';
-import {ErrorBoundary, NoibuJS} from 'noibu-js';
+import {ErrorBoundary, NoibuJS} from 'noibu-react-native';
 import InputView from './InputsView';
 
 interface Item {
@@ -67,6 +68,13 @@ export default function App() {
     );
   };
 
+  const triggerHelpCodeAlert = useCallback(async () => {
+    const response = await NoibuJS.requestHelpCode();
+    if (response) {
+      Alert.alert('Help Code delivered:', response);
+    }
+  }, []);
+
   const calculateItemsInCart = () =>
     cartItems.reduce((total, item) => total + item.quantity, 0);
 
@@ -111,9 +119,9 @@ export default function App() {
               <View style={styles.itemsContainer}>
                 <TouchableOpacity
                   style={styles.buyButton}
-                  onPress={() => NoibuJS.requestHelpCode()}>
+                  onPress={triggerHelpCodeAlert}>
                   <Text style={styles.whiteText}>
-                    Flush all events to metroplex
+                    Flush all events to metroplex and request a help code
                   </Text>
                 </TouchableOpacity>
               </View>
