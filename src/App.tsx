@@ -138,7 +138,7 @@ export default function App() {
               <View style={styles.itemsContainer}>
                 <TouchableOpacity
                   onPress={() => {
-                    fetch('https://news.ycombinator.com/news')
+                    fetch('https://jsonplaceholder.typicode.com/todos/1')
                       .then(r => r.text())
                       .then(text => {
                         console.log(

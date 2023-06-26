@@ -9,7 +9,8 @@
     "ios:install": "cd ios && pod install",
     "start": "react-native start",
     "test": "jest",
-    "onchange": "SDK=./../unicron/public_sdk/react-native;D=./node_modules/noibu-react-native/;rm -rf ${D}/dist/;mkdir ${D}/dist;cp -R ${SDK}/dist/ ${D}/dist;cp $SDK/package.json ${D};echo \"Updating $(date +%s)\""
+    "onchange:body": "SDK=./../unicron/public_sdk/react-native;D=./node_modules/noibu-react-native/; rm -rf ${D}/dist/;mkdir ${D}/dist;cp -R ${SDK}/dist/ ${D}/dist;cp $SDK/package.json ${D};echo \"Updating $(date +%s)\"",
+    "onchange": "SDK=./../unicron/public_sdk/react-native;onchange \"$SDK/dist/*\" -- npm run onchange:body"
   },
   "dependencies": {
     "react": "^18.2.0",
