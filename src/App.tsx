@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import ShoppingCart, {CartItem} from './ShoppingCart';
 import {styles} from './App.styles';
-import {ErrorBoundary, NoibuJS} from 'noibu-react-native';
+import {ErrorBoundary, NoibuJS, setupNoibu} from 'noibu-react-native';
 import InputView from './InputsView';
 
 interface Item {
@@ -20,7 +20,7 @@ interface Item {
   name: string;
   price: number;
 }
-
+setupNoibu({domain: ''});
 export default function App() {
   const [items] = useState<Item[]>([
     {id: 1, name: 'Product 1', price: 10},
