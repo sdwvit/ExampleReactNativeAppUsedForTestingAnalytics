@@ -20,7 +20,8 @@ interface Item {
   name: string;
   price: number;
 }
-setupNoibu({domain: ''});
+setupNoibu({domain: 'www.miniclip.com'});
+
 export default function App() {
   const [items] = useState<Item[]>([
     {id: 1, name: 'Product 1', price: 10},

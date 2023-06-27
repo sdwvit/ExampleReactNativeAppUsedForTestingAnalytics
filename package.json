@@ -10,7 +10,7 @@
     "ios:install": "cd ios && pod install",
     "start": "react-native start",
     "test": "jest",
-    "onchange:body": "PACK=noibu-react-native-0.0.1.tgz;TO=./node_modules/noibu-react-native;rm -rf ${TO}/*;cp ./../unicron/public_sdk/react-native/${PACK} ${TO}/${PACK};tar -xzf ${TO}/${PACK} -C ${TO};mv ${TO}/package/* ${TO};rm -r ${TO}/package;echo \"Updating $(date +%s)\";",
+    "onchange:body": "PACK=noibu-react-native-0.0.1.tgz;TO=./node_modules/noibu-react-native;rm -rf ${TO}/*;cp ./../unicron/public_sdk/react-native/${PACK} ${TO}/${PACK};tar -xzf ${TO}/${PACK} -C ${TO};mv ${TO}/package/* ${TO};rm -r ${TO}/package;echo \"Updating $(date)\";",
     "onchange": "onchange -d 1000 \"./../unicron/public_sdk/react-native/noibu-react-native-0.0.1.tgz\" -- npm run onchange:body"
   },
   "dependencies": {
