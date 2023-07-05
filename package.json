@@ -4,14 +4,16 @@
   "private": true,
   "scripts": {
     "android": "react-native run-android",
-    "ios": "react-native run-ios",
+    "ios": "react-native run-ios -- --simulator=\"iPhone 14 Pro (16.0)\"",
     "lint": "eslint .",
     "clean": "react-native clean",
     "ios:install": "cd ios && pod install",
     "start": "react-native start",
     "test": "jest",
-    "onchange:body": "PACK=noibu-react-native-0.0.1.tgz;TO=./node_modules/noibu-react-native;rm -rf ${TO}/*;cp ./../unicron/public_sdk/react-native/${PACK} ${TO}/${PACK};tar -xzf ${TO}/${PACK} -C ${TO};mv ${TO}/package/* ${TO};rm -r ${TO}/package;echo \"Updating $(date)\";",
-    "onchange": "onchange -d 1000 \"./../unicron/public_sdk/react-native/noibu-react-native-0.0.1.tgz\" -- npm run onchange:body"
+    "sourcemap:android": "react-native bundle --dev false --platform android --entry-file index.js --reset-cache --bundle-output index.android.bundle --sourcemap-output index.android.bundle.map",
+    "sourcemap:ios": "react-native bundle --dev false --platform ios --entry-file index.js --reset-cache --bundle-output main.jsbundle --sourcemap-output main.jsbundle.map",
+    "onchange:body": "PACK=noibu-react-native-*.tgz;TO=./node_modules/noibu-react-native;rm -rf ${TO}/*;cp ./../unicron/public_sdk/react-native/${PACK} ${TO}/${PACK};tar -xzf ${TO}/${PACK} -C ${TO};rm ${TO}/${PACK};mv ${TO}/package/* ${TO};rm -r ${TO}/package;echo \"Updating $(date)\";",
+    "onchange": "onchange -d 1000 \"./../unicron/public_sdk/react-native/noibu-react-native-*.tgz\" -- npm run onchange:body"
   },
   "dependencies": {
     "@react-native/metro-config": "^0.72.6",

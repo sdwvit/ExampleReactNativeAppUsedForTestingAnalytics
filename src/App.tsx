@@ -5,7 +5,6 @@ import {
   TouchableOpacity,
   SafeAreaView,
   ScrollView,
-  TouchableWithoutFeedback,
   KeyboardAvoidingView,
   Platform,
   Alert,
@@ -28,10 +27,10 @@ export default function App() {
     {id: 2, name: 'Product 2', price: 20},
     {id: 3, name: 'Product 3', price: 30},
   ]);
+  const [isErrorComponentShown, setIsErrorComponentShown] = useState(false);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [showCart, setShowCart] = useState<boolean>(false);
-  const [u, setU] = useState(0);
-  const update = () => setU(u + 1);
+
   const handleBuy = (id: number) => {
     const selectedItem = items.find(item => item.id === id);
     if (selectedItem) {
@@ -82,105 +81,104 @@ export default function App() {
   return (
     <ErrorBoundary
       fallback={() => (
-        <View>
+        <SafeAreaView style={styles.container}>
           <Text>Oh no!</Text>
-        </View>
+        </SafeAreaView>
       )}>
       <KeyboardAvoidingView
         style={{flex: 1}}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-        <TouchableWithoutFeedback style={{zIndex: 100}}>
-          <SafeAreaView style={styles.container}>
-            <ScrollView>
-              <View style={styles.header}>
-                <Text style={styles.title}>Welcome to My Store</Text>
-                <TouchableOpacity
-                  onPress={() => {
-                    setShowCart(true);
-                  }}
-                  style={styles.cartButton}>
-                  <Text style={styles.cartButtonText}>
-                    🛒 {calculateItemsInCart()} items
-                  </Text>
-                </TouchableOpacity>
-              </View>
-              <View style={styles.itemsContainer}>
-                {items.map(item => (
-                  <View key={item.id} style={styles.item}>
-                    <Text style={styles.itemName}>{item.name}</Text>
-                    <Text style={styles.itemPrice}>${item.price}</Text>
-                    <TouchableOpacity
-                      onPress={() => handleBuy(item.id)}
-                      style={styles.buyButton}>
-                      <Text style={styles.whiteText}>Buy</Text>
-                    </TouchableOpacity>
-                  </View>
-                ))}
-              </View>
-              <View style={styles.itemsContainer}>
-                <TouchableOpacity
-                  style={styles.buyButton}
-                  onPress={triggerHelpCodeAlert}>
-                  <Text style={styles.whiteText}>
-                    Flush all events to metroplex and request a help code
-                  </Text>
-                </TouchableOpacity>
-              </View>
+        <SafeAreaView style={styles.container}>
+          <ScrollView>
+            <View style={styles.header}>
+              <Text style={styles.title}>Welcome to My Store</Text>
+              <TouchableOpacity
+                onPress={() => {
+                  setShowCart(true);
+                }}
+                style={styles.cartButton}>
+                <Text style={styles.cartButtonText}>
+                  🛒 {calculateItemsInCart()} items
+                </Text>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.itemsContainer}>
+              {items.map(item => (
+                <View key={item.id} style={styles.item}>
+                  <Text style={styles.itemName}>{item.name}</Text>
+                  <Text style={styles.itemPrice}>${item.price}</Text>
+                  <TouchableOpacity
+                    onPress={() => handleBuy(item.id)}
+                    style={styles.buyButton}>
+                    <Text style={styles.whiteText}>Buy</Text>
+                  </TouchableOpacity>
+                </View>
+              ))}
+            </View>
+            <View style={styles.itemsContainer}>
+              <TouchableOpacity
+                style={styles.buyButton}
+                onPress={triggerHelpCodeAlert}>
+                <Text style={styles.whiteText}>
+                  Flush all events to metroplex and request a help code
+                </Text>
+              </TouchableOpacity>
+            </View>
 
-              <View style={styles.itemsContainer}>
-                <TouchableOpacity
-                  onPress={() => {
-                    throw new Error('simulated react error');
-                  }}
-                  style={styles.buyButton}>
-                  <Text style={styles.whiteText}>simulate react error</Text>
-                </TouchableOpacity>
-              </View>
-              <View style={styles.itemsContainer}>
-                <TouchableOpacity
-                  onPress={() => {
-                    fetch('https://jsonplaceholder.typicode.com/todos/1')
-                      .then(r => r.text())
-                      .then(text => {
-                        console.log(
-                          `fetched ${text.length} or so bytes of html`,
-                        );
-                      });
-                    setTimeout(
-                      () =>
-                        Promise.reject(new Error('standard promise rejection')),
-                      500,
-                    );
-                  }}
-                  style={styles.buyButton}>
-                  <Text style={styles.whiteText}>
-                    simulate an http call and an async promise rejection
-                  </Text>
-                </TouchableOpacity>
-              </View>
-              <View style={styles.itemsContainer}>
-                <TouchableOpacity
-                  onPress={() => {
-                    update();
-                  }}
-                  style={styles.buyButton}>
-                  <Text style={styles.whiteText}>Force update view</Text>
-                </TouchableOpacity>
-              </View>
-              {showCart && (
-                <ShoppingCart
-                  cartItems={cartItems}
-                  handleRemoveFromCart={handleRemoveFromCart}
-                  calculateTotal={calculateTotal}
-                  onClose={() => setShowCart(false)}
-                />
-              )}
-              <View style={styles.itemsContainer}>
-                <InputView />
-              </View>
-            </ScrollView>
-          </SafeAreaView>
-        </TouchableWithoutFeedback>
+            <View style={styles.itemsContainer}>
+              <TouchableOpacity
+                onPress={() => {
+                  throw new Error('simulated sync error');
+                }}
+                style={styles.buyButton}>
+                <Text style={styles.whiteText}>simulate sync error</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.itemsContainer}>
+              <TouchableOpacity
+                onPress={() => {
+                  setIsErrorComponentShown(true);
+                }}
+                style={styles.buyButton}>
+                <Text style={styles.whiteText}>simulate react error</Text>
+                {isErrorComponentShown ? (
+                  <div>{isErrorComponentShown.c}</div>
+                ) : null}
+              </TouchableOpacity>
+            </View>
+            <View style={styles.itemsContainer}>
+              <TouchableOpacity
+                onPress={() => {
+                  fetch('https://jsonplaceholder.typicode.com/todos/1')
+                    .then(r => r.text())
+                    .then(text => {
+                      console.log(`fetched ${text.length} or so bytes of html`);
+                    });
+                  setTimeout(
+                    () =>
+                      Promise.reject(new Error('standard promise rejection')),
+                    500,
+                  );
+                }}
+                style={styles.buyButton}>
+                <Text style={styles.whiteText}>
+                  simulate an http call and an async promise rejection
+                </Text>
+              </TouchableOpacity>
+            </View>
+            {showCart && (
+              <ShoppingCart
+                cartItems={cartItems}
+                handleRemoveFromCart={handleRemoveFromCart}
+                calculateTotal={calculateTotal}
+                onClose={() => setShowCart(false)}
+              />
+            )}
+            <View style={styles.itemsContainer}>
+              <InputView />
+            </View>
+          </ScrollView>
+        </SafeAreaView>
       </KeyboardAvoidingView>
     </ErrorBoundary>
   );
