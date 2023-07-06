@@ -16,6 +16,7 @@ import MetroplexSocket from 'noibu-react-native/dist/api/metroplexSocket';
 import Storage from 'noibu-react-native/dist/storage/storage';
 import * as Constants from 'noibu-react-native/dist/constants';
 import InputView from './InputsView';
+import pkg from '../package.json';
 
 interface Item {
   id: number;
@@ -23,6 +24,7 @@ interface Item {
   price: number;
 }
 setupNoibu({domain: 'www.miniclip.com'});
+NoibuJS.addCustomAttribute('app_version', pkg.version);
 
 export default function App() {
   const [items] = useState<Item[]>([
