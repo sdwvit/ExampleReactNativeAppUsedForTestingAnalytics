@@ -115,10 +115,7 @@ export default function App() {
       text: (
         <>
           simulate react error
-          {isErrorComponentShown ? (
-            // @ts-ignore
-            <div>{isErrorComponentShown.c}</div>
-          ) : null}
+          {isErrorComponentShown ? <div>{isErrorComponentShown}</div> : null}
         </>
       ),
     },
