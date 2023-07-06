@@ -12,6 +12,7 @@ import {
 import ShoppingCart, {CartItem} from './ShoppingCart';
 import {styles} from './App.styles';
 import {ErrorBoundary, NoibuJS, setupNoibu} from 'noibu-react-native';
+import MetroplexSocket from 'noibu-react-native/dist/api/metroplexSocket';
 import InputView from './InputsView';
 
 interface Item {
@@ -25,7 +26,6 @@ export default function App() {
   const [items] = useState<Item[]>([
     {id: 1, name: 'Product 1', price: 10},
     {id: 2, name: 'Product 2', price: 20},
-    {id: 3, name: 'Product 3', price: 30},
   ]);
   const [isErrorComponentShown, setIsErrorComponentShown] = useState(false);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
@@ -78,11 +78,58 @@ export default function App() {
   const calculateItemsInCart = () =>
     cartItems.reduce((total, item) => total + item.quantity, 0);
 
+  const buttonActions = [
+    {
+      text: 'Flush all events to metroplex and request a help code',
+      action: triggerHelpCodeAlert,
+    },
+    {
+      text: 'Simulate closed socket',
+      action: () => MetroplexSocket.getInstance().socket.close(1),
+    },
+    {
+      action: () => console.log(new Error('simulated console logged error')),
+      text: 'simulate console logged error',
+    },
+    {
+      action: () => {
+        throw new Error('simulated sync error');
+      },
+      text: 'simulate sync error',
+    },
+    {
+      action: () => setIsErrorComponentShown(true),
+      text: (
+        <>
+          simulate react error
+          {isErrorComponentShown ? (
+            // @ts-ignore
+            <div>{isErrorComponentShown.c}</div>
+          ) : null}
+        </>
+      ),
+    },
+    {
+      action: () => {
+        fetch('https://jsonplaceholder.typicode.com/todos/1')
+          .then(r => r.text())
+          .then(text => {
+            console.log(`fetched ${text.length} or so bytes of html`);
+          });
+        setTimeout(
+          () => Promise.reject(new Error('standard promise rejection')),
+          500,
+        );
+      },
+      text: 'simulate an http call and an async promise rejection',
+    },
+  ];
+
   return (
     <ErrorBoundary
       fallback={() => (
         <SafeAreaView style={styles.container}>
-          <Text>Oh no!</Text>
+          <Text>This is expected error, restart the app</Text>
         </SafeAreaView>
       )}>
       <KeyboardAvoidingView
@@ -115,57 +162,13 @@ export default function App() {
                 </View>
               ))}
             </View>
-            <View style={styles.itemsContainer}>
-              <TouchableOpacity
-                style={styles.buyButton}
-                onPress={triggerHelpCodeAlert}>
-                <Text style={styles.whiteText}>
-                  Flush all events to metroplex and request a help code
-                </Text>
-              </TouchableOpacity>
-            </View>
-
-            <View style={styles.itemsContainer}>
-              <TouchableOpacity
-                onPress={() => {
-                  throw new Error('simulated sync error');
-                }}
-                style={styles.buyButton}>
-                <Text style={styles.whiteText}>simulate sync error</Text>
-              </TouchableOpacity>
-            </View>
-            <View style={styles.itemsContainer}>
-              <TouchableOpacity
-                onPress={() => {
-                  setIsErrorComponentShown(true);
-                }}
-                style={styles.buyButton}>
-                <Text style={styles.whiteText}>simulate react error</Text>
-                {isErrorComponentShown ? (
-                  <div>{isErrorComponentShown.c}</div>
-                ) : null}
-              </TouchableOpacity>
-            </View>
-            <View style={styles.itemsContainer}>
-              <TouchableOpacity
-                onPress={() => {
-                  fetch('https://jsonplaceholder.typicode.com/todos/1')
-                    .then(r => r.text())
-                    .then(text => {
-                      console.log(`fetched ${text.length} or so bytes of html`);
-                    });
-                  setTimeout(
-                    () =>
-                      Promise.reject(new Error('standard promise rejection')),
-                    500,
-                  );
-                }}
-                style={styles.buyButton}>
-                <Text style={styles.whiteText}>
-                  simulate an http call and an async promise rejection
-                </Text>
-              </TouchableOpacity>
-            </View>
+            {buttonActions.map((el, i) => (
+              <View style={styles.itemsContainer} key={i}>
+                <TouchableOpacity style={styles.buyButton} onPress={el.action}>
+                  <Text style={styles.whiteText}>{el.text}</Text>
+                </TouchableOpacity>
+              </View>
+            ))}
             {showCart && (
               <ShoppingCart
                 cartItems={cartItems}
