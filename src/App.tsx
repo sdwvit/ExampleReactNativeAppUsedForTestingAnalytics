@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -13,6 +13,8 @@ import ShoppingCart, {CartItem} from './ShoppingCart';
 import {styles} from './App.styles';
 import {ErrorBoundary, NoibuJS, setupNoibu} from 'noibu-react-native';
 import MetroplexSocket from 'noibu-react-native/dist/api/metroplexSocket';
+import Storage from 'noibu-react-native/dist/storage/storage';
+import * as Constants from 'noibu-react-native/dist/constants';
 import InputView from './InputsView';
 
 interface Item {
@@ -27,9 +29,18 @@ export default function App() {
     {id: 1, name: 'Product 1', price: 10},
     {id: 2, name: 'Product 2', price: 20},
   ]);
+  const [sessionInfo, setSessionInfo] = useState<string | null>(null);
+  const [storageSize, setStorageSize] = useState(0);
   const [isErrorComponentShown, setIsErrorComponentShown] = useState(false);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [showCart, setShowCart] = useState<boolean>(false);
+  const getSessionInfo = () => {
+    Storage.getInstance()
+      .load<string>(Constants.NOIBU_BROWSER_ID_KYWRD)
+      .then(setSessionInfo);
+  };
+  useEffect(getSessionInfo, []);
+  useEffect(getSessionInfo, [storageSize]);
 
   const handleBuy = (id: number) => {
     const selectedItem = items.find(item => item.id === id);
@@ -123,6 +134,11 @@ export default function App() {
       },
       text: 'simulate an http call and an async promise rejection',
     },
+    {
+      action: async () =>
+        setStorageSize(await Storage.getInstance().calculateUsedSize()),
+      text: <>Calculate storage used: {storageSize} bytes</>,
+    },
   ];
 
   return (
@@ -159,6 +175,19 @@ export default function App() {
                     style={styles.buyButton}>
                     <Text style={styles.whiteText}>Buy</Text>
                   </TouchableOpacity>
+                </View>
+              ))}
+            </View>
+            <View style={{marginLeft: 30}}>
+              <Text>Session info:</Text>
+              {Object.entries(JSON.parse(sessionInfo || '{}')).map(entry => (
+                <View key={entry[0]}>
+                  <Text>
+                    <>
+                      * <Text style={{fontWeight: 'bold'}}>{entry[0]}</Text>:{' '}
+                      {`${entry[1]}`}
+                    </>
+                  </Text>
                 </View>
               ))}
             </View>
