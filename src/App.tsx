@@ -24,10 +24,9 @@ interface Item {
   price: number;
 }
 setupNoibu({
-  domain: 'staging.mobile.levi.com',
+  domain: 'example_domain',
   enableHttpDataCollection: true,
   listOfUrlsToCollectHttpDataFrom: [
-    'https://www.miniclip.com/',
     'https://jsonplaceholder.typicode.com/todos/1',
   ],
 });
