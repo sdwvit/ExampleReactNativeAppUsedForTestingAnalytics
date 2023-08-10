@@ -1,79 +1,92 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# React Native App with Noibu Integration
 
-# Getting Started
+This is a simple React Native application that demonstrates the integration of the Noibu React Native SDK.
+The app showcases a basic shopping experience with a cart feature and includes functionalities to trigger simulated errors for testing and debugging purposes.
 
->**Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
+## Table of Contents
 
-## Step 1: Start the Metro Server
+- [Introduction](#introduction)
+- [Prerequisites](#prerequisites)
+- [Getting Started](#getting-started)
+- [Features](#features)
+- [Simulated Errors](#simulated-errors)
+- [Support](#support)
+- [License](#license)
 
-First, you will need to start **Metro**, the JavaScript _bundler_ that ships _with_ React Native.
+## Introduction
 
-To start Metro, run the following command from the _root_ of your React Native project:
+The React Native App with Noibu Integration provides a sample e-commerce experience where users can view a list of products, add items to their cart, and view the cart's total. Additionally, the app includes a Noibu integration to capture and report errors in the application.
+
+[Noibu](https://www.noibu.com/) is an error monitoring tool that helps developers identify and resolve errors in web and mobile applications. With the Noibu React Native SDK, you can easily integrate error tracking and monitoring capabilities into your React Native projects.
+
+## Prerequisites
+
+To run this application, you'll need the following installed on your development machine:
+
+- Node.js and npm (Node Package Manager)
+- React Native CLI
+- Android SDK or Xcode for iOS development
+
+## Getting Started
+
+Follow these steps to get the app up and running on your local machine:
+
+1. Clone this repository to your local machine using Git.
+2. Navigate to the project's root directory.
+
+### Installation
+
+Install the required dependencies:
 
 ```bash
-# using npm
-npm start
-
-# OR using Yarn
-yarn start
+npm install
 ```
 
-## Step 2: Start your Application
-
-Let Metro Bundler run in its _own_ terminal. Open a _new_ terminal from the _root_ of your React Native project. Run the following command to start your _Android_ or _iOS_ app:
-
-### For Android
-
+Additionally, for iOS target do:
 ```bash
-# using npm
-npm run android
-
-# OR using Yarn
-yarn android
+npx pod-install
 ```
 
-### For iOS
+### Running the App
+Connect your device or start an emulator.
 
+For Android:
 ```bash
-# using npm
-npm run ios
-
-# OR using Yarn
-yarn ios
+npx react-native run-android
 ```
 
-If everything is set up _correctly_, you should see your new app running in your _Android Emulator_ or _iOS Simulator_ shortly provided you have set up your emulator/simulator correctly.
+For iOS:
+```bash
+npx react-native run-ios
+```
 
-This is one way to run your app — you can also run it directly from within Android Studio and Xcode respectively.
+## Features
 
-## Step 3: Modifying your App
+The app includes the following features:
 
-Now that you have successfully run the app, let's modify it.
+- A simple view with a set of interactive elements to mimic real-world e-commerce application.
+- Triggers placed to simulate and handle various types of errors for testing and debugging of SDK features.
 
-1. Open `App.tsx` in your text editor of choice and edit some lines.
-2. For **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Developer Menu** (<kbd>Ctrl</kbd> + <kbd>M</kbd> (on Window and Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (on macOS)) to see your changes!
+## Simulated Errors
 
-   For **iOS**: Hit <kbd>Cmd ⌘</kbd> + <kbd>R</kbd> in your iOS Simulator to reload the app and see your changes!
+The application includes several options to simulate errors and test the Noibu React Native SDK's error reporting capabilities. These options can be found in the app under the "Simulated Errors" section:
 
-## Congratulations! :tada:
+- **Flush all events and request a help code**: Simulates flushing events to the Noibu server and requesting a help code.
+- **Simulate closed socket**: Closes the socket connection to force SDK to reconnect to the Noibu server.
+- **Simulate console logged error**: Calls console log with an Error object passed as an argument. Tests certain error catch mechanisms.
+- **Simulate sync error**: Throws a synchronous error, which is supposed to be caught by SDK.
+- **Simulate react error**: Triggers a React component error caught by ErrorBoundary (Expected Error: Restart the app).
+- **Simulate an HTTP call and an async promise rejection**: Initiates an HTTP call and simulates an asynchronous promise rejection which is then caught by SDK.
+- **Simulate a form**: an input field. Noibu SDK is supposed to track keyboard typing events on input fields.
 
-You've successfully run and modified your React Native App. :partying_face:
+## Support
 
-### Now what?
+For support and inquiries regarding the Noibu React Native SDK, please refer to the [Readme Section on npm](https://www.npmjs.com/package/noibu-react-native).
 
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [Introduction to React Native](https://reactnative.dev/docs/getting-started).
+## License
 
-# Troubleshooting
+Copyright 2023 Noibu.com
 
-If you can't get this to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
+Permission to use, copy, modify, and/or distribute this software for any purpose with or without fee is hereby granted, provided that the above copyright notice and this permission notice appear in all copies.
 
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+THE SOFTWARE IS PROVIDED “AS IS” AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
