@@ -45,13 +45,11 @@ export default function App({ componentId }: { componentId?: string }) {
   const [storageSize, setStorageSize] = useState(0);
   const [isErrorComponentShown, setIsErrorComponentShown] = useState(false);
 
-  const getSessionInfo = () => {
+  useEffect(() => {
     Storage.getInstance()
       .load<string>(Constants.NOIBU_BROWSER_ID_KYWRD)
       .then(setSessionInfo);
-  };
-  useEffect(getSessionInfo, []);
-  useEffect(getSessionInfo, [storageSize]);
+  }, [storageSize]);
 
   const handleBuy = (id: number) => {
     setCartItems(cartItems => {
@@ -61,28 +59,19 @@ export default function App({ componentId }: { componentId?: string }) {
     });
   };
 
-  const handleRemoveFromCart = (id: number) => {
-    setCartItems(cartItems => {
-      if (cartItems[id].quantity === 0) {
-        delete cartItems[id];
-      } else {
-        cartItems[id].quantity -= 1;
-      }
-      return { ...cartItems };
-    });
+  const handleRemoveFromCart = () => {
+    setCartItems(cartItems => ({ ...cartItems }));
   };
-
-  const triggerHelpCodeAlert = useCallback(async () => {
-    const response = await NoibuJS.requestHelpCode();
-    if (response) {
-      Alert.alert('Help Code delivered:', response);
-    }
-  }, []);
 
   const buttonActions = [
     {
       text: 'Flush all events to metroplex and request a help code',
-      action: triggerHelpCodeAlert,
+      action: async () => {
+        const response = await NoibuJS.requestHelpCode();
+        if (response) {
+          Alert.alert('Help Code delivered:', response);
+        }
+      },
     },
     {
       text: 'Simulate closed socket',
