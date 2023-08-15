@@ -1,4 +1,4 @@
-import {StyleSheet} from 'react-native';
+import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
   container: {
@@ -13,22 +13,6 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: 10,
     paddingBottom: 10,
-  },
-  closeButton: {
-    position: 'absolute',
-    top: 10,
-    right: 10,
-    backgroundColor: '#FF6464',
-    borderRadius: 50,
-    width: 30,
-    height: 30,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  closeButtonText: {
-    color: 'white',
-    fontSize: 20,
-    fontWeight: 'bold',
   },
   cartItem: {
     flexDirection: 'row',

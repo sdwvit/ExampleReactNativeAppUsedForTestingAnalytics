@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {View, TextInput, Button, Alert, Text} from 'react-native';
+import React, { useState } from 'react';
+import { View, TextInput, Button, Alert, Text } from 'react-native';
 
 const InputView = () => {
   const [inputText, setInputText] = useState('');
@@ -21,7 +21,7 @@ const InputView = () => {
     <View>
       <Text>Simulate a form</Text>
       <TextInput
-        style={{borderWidth: 1, borderColor: 'gray', padding: 10}}
+        style={{ borderWidth: 1, borderColor: 'gray', padding: 10 }}
         onChangeText={setInputText}
         value={inputText}
         placeholder={'This is a required prop'}
