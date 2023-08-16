@@ -2,8 +2,26 @@
  * @format
  */
 
-import {AppRegistry} from 'react-native';
+import { Navigation } from 'react-native-navigation';
 import App from './src/App';
-import {name as appName} from './app.json';
+import ShoppingCart from './src/ShoppingCart';
+import { InnerView } from './src/InnerView';
 
-AppRegistry.registerComponent(appName, () => App);
+Navigation.registerComponent('Home', () => App);
+Navigation.registerComponent('ShoppingCart', () => ShoppingCart);
+Navigation.registerComponent('InnerView', () => InnerView);
+Navigation.events().registerAppLaunchedListener(() => {
+  Navigation.setRoot({
+    root: {
+      stack: {
+        children: [
+          {
+            component: {
+              name: 'Home',
+            },
+          },
+        ],
+      },
+    },
+  });
+});

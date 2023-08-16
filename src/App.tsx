@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -9,99 +9,69 @@ import {
   Platform,
   Alert,
 } from 'react-native';
-import ShoppingCart, {CartItem} from './ShoppingCart';
-import {styles} from './App.styles';
-import {ErrorBoundary, NoibuJS, setupNoibu} from 'noibu-react-native';
+import { styles } from './App.styles';
+import { ErrorBoundary, NoibuJS, setupNoibu } from 'noibu-react-native';
 import MetroplexSocket from 'noibu-react-native/dist/api/metroplexSocket';
 import Storage from 'noibu-react-native/dist/storage/storage';
 import * as Constants from 'noibu-react-native/dist/constants';
 import InputView from './InputsView';
 import pkg from '../package.json';
+import { NOIBU_BROWSER_ID_KYWRD } from 'noibu-react-native/dist/constants';
+import { Navigation } from 'react-native-navigation';
+import { CartItem } from './ShoppingCart';
 
 interface Item {
   id: number;
   name: string;
   price: number;
 }
+
 setupNoibu({
-  domain: 'staging.mobile.levi.com',
+  domain: 'example_domain',
   enableHttpDataCollection: true,
   listOfUrlsToCollectHttpDataFrom: [
-    'https://www.miniclip.com/',
     'https://jsonplaceholder.typicode.com/todos/1',
   ],
 });
 NoibuJS.addCustomAttribute('app_version', pkg.version);
 
-export default function App() {
-  const [items] = useState<Item[]>([
-    {id: 1, name: 'Product 1', price: 10},
-    {id: 2, name: 'Product 2', price: 20},
-  ]);
+export default function App({ componentId }: { componentId?: string }) {
+  const [items] = useState<Record<Item['id'], Item>>({
+    1: { id: 1, name: 'Product 1', price: 10 },
+    2: { id: 2, name: 'Product 2', price: 20 },
+  });
+  const [cartItems, setCartItems] = useState<Record<Item['id'], CartItem>>([]);
   const [sessionInfo, setSessionInfo] = useState<string | null>(null);
   const [storageSize, setStorageSize] = useState(0);
   const [isErrorComponentShown, setIsErrorComponentShown] = useState(false);
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
-  const [showCart, setShowCart] = useState<boolean>(false);
-  const getSessionInfo = () => {
+
+  useEffect(() => {
     Storage.getInstance()
       .load<string>(Constants.NOIBU_BROWSER_ID_KYWRD)
       .then(setSessionInfo);
-  };
-  useEffect(getSessionInfo, []);
-  useEffect(getSessionInfo, [storageSize]);
+  }, [storageSize]);
 
   const handleBuy = (id: number) => {
-    const selectedItem = items.find(item => item.id === id);
-    if (selectedItem) {
-      const existingCartItem = cartItems.find(item => item.id === id);
-      if (existingCartItem) {
-        const updatedCartItems = cartItems.map(item => {
-          if (item.id === id) {
-            return {...item, quantity: item.quantity + 1};
-          }
-          return item;
-        });
-        setCartItems(updatedCartItems);
-      } else {
-        setCartItems([...cartItems, {...selectedItem, quantity: 1}]);
-      }
-    }
+    setCartItems(cartItems => {
+      cartItems[id] ||= { ...items[id], quantity: 0 };
+      cartItems[id].quantity += 1;
+      return { ...cartItems };
+    });
   };
 
-  const handleRemoveFromCart = (id: number) => {
-    const updatedCartItems = cartItems
-      .map(item => {
-        if (item.id === id) {
-          return {...item, quantity: item.quantity - 1};
-        }
-        return item;
-      })
-      .filter(item => item.quantity > 0);
-    setCartItems(updatedCartItems);
+  const handleRemoveFromCart = () => {
+    setCartItems(cartItems => ({ ...cartItems }));
   };
-
-  const calculateTotal = () => {
-    return cartItems.reduce(
-      (total, item) => total + item.price * item.quantity,
-      0,
-    );
-  };
-
-  const triggerHelpCodeAlert = useCallback(async () => {
-    const response = await NoibuJS.requestHelpCode();
-    if (response) {
-      Alert.alert('Help Code delivered:', response);
-    }
-  }, []);
-
-  const calculateItemsInCart = () =>
-    cartItems.reduce((total, item) => total + item.quantity, 0);
 
   const buttonActions = [
     {
       text: 'Flush all events to metroplex and request a help code',
-      action: triggerHelpCodeAlert,
+      action: async () => {
+        const response = await NoibuJS.requestHelpCode();
+        if (response) {
+          Alert.alert('Help Code delivered:', response);
+        }
+      },
     },
     {
       text: 'Simulate closed socket',
@@ -145,6 +115,18 @@ export default function App() {
         setStorageSize(await Storage.getInstance().calculateUsedSize()),
       text: <>Calculate storage used: {storageSize} bytes</>,
     },
+    {
+      action: async () => {
+        const BrowserId = JSON.parse(
+          (await Storage.getInstance().load(NOIBU_BROWSER_ID_KYWRD)) || '',
+        ).BrowserId;
+        await Storage.getInstance().save(
+          NOIBU_BROWSER_ID_KYWRD,
+          JSON.stringify({ BrowserId }),
+        );
+      },
+      text: 'Clean local storage',
+    },
   ];
 
   return (
@@ -155,7 +137,7 @@ export default function App() {
         </SafeAreaView>
       )}>
       <KeyboardAvoidingView
-        style={{flex: 1}}
+        style={{ flex: 1 }}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <SafeAreaView style={styles.container}>
           <ScrollView>
@@ -163,16 +145,29 @@ export default function App() {
               <Text style={styles.title}>Welcome to My Store</Text>
               <TouchableOpacity
                 onPress={() => {
-                  setShowCart(true);
+                  Navigation.push(componentId!, {
+                    component: {
+                      name: 'ShoppingCart',
+                      passProps: {
+                        handleRemoveFromCart,
+                        cartItems,
+                      },
+                    },
+                  });
                 }}
                 style={styles.cartButton}>
                 <Text style={styles.cartButtonText}>
-                  🛒 {calculateItemsInCart()} items
+                  🛒{' '}
+                  {Object.values(cartItems).reduce(
+                    (total, item) => total + item.quantity,
+                    0,
+                  )}{' '}
+                  items
                 </Text>
               </TouchableOpacity>
             </View>
             <View style={styles.itemsContainer}>
-              {items.map(item => (
+              {Object.values(items).map(item => (
                 <View key={item.id} style={styles.item}>
                   <Text style={styles.itemName}>{item.name}</Text>
                   <Text style={styles.itemPrice}>${item.price}</Text>
@@ -184,13 +179,13 @@ export default function App() {
                 </View>
               ))}
             </View>
-            <View style={{marginLeft: 30}}>
+            <View style={{ marginLeft: 30 }}>
               <Text>Session info:</Text>
               {Object.entries(JSON.parse(sessionInfo || '{}')).map(entry => (
                 <View key={entry[0]}>
                   <Text>
                     <>
-                      * <Text style={{fontWeight: 'bold'}}>{entry[0]}</Text>:{' '}
+                      * <Text style={{ fontWeight: 'bold' }}>{entry[0]}</Text>:{' '}
                       {`${entry[1]}`}
                     </>
                   </Text>
@@ -204,14 +199,6 @@ export default function App() {
                 </TouchableOpacity>
               </View>
             ))}
-            {showCart && (
-              <ShoppingCart
-                cartItems={cartItems}
-                handleRemoveFromCart={handleRemoveFromCart}
-                calculateTotal={calculateTotal}
-                onClose={() => setShowCart(false)}
-              />
-            )}
             <View style={styles.itemsContainer}>
               <InputView />
             </View>
