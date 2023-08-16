@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { styles } from './ShoppingCart.styles';
+import { Navigation } from 'react-native-navigation';
 
 export interface CartItem {
   id: number;
@@ -16,7 +17,7 @@ interface Props {
 }
 
 export default function ShoppingCart(props: Props) {
-  const { cartItems, handleRemoveFromCart } = props;
+  const { cartItems, handleRemoveFromCart, componentId } = props;
   const [items, setItems] = useState<typeof cartItems>(cartItems);
 
   return (
@@ -56,6 +57,16 @@ export default function ShoppingCart(props: Props) {
                 .toFixed(2)}
             </Text>
           </View>
+          <TouchableOpacity
+            onPress={() =>
+              Navigation.push(componentId!, {
+                component: {
+                  name: 'InnerView',
+                },
+              })
+            }>
+            <Text>Go to inner view</Text>
+          </TouchableOpacity>
         </>
       ) : (
         <Text>Your cart is empty.</Text>

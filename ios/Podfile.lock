@@ -486,20 +486,20 @@ PODS:
     - React-jsi (= 0.72.3)
     - React-logger (= 0.72.3)
     - React-perflogger (= 0.72.3)
-  - ReactNativeNavigation (7.36.0):
+  - ReactNativeNavigation (7.37.0):
     - HMSegmentedControl
     - React-Core
     - React-CoreModules
     - React-RCTImage
     - React-RCTText
-    - ReactNativeNavigation/Core (= 7.36.0)
-  - ReactNativeNavigation/Core (7.36.0):
+    - ReactNativeNavigation/Core (= 7.37.0)
+  - ReactNativeNavigation/Core (7.37.0):
     - HMSegmentedControl
     - React-Core
     - React-CoreModules
     - React-RCTImage
     - React-RCTText
-  - RNCAsyncStorage (1.19.1):
+  - RNCAsyncStorage (1.19.2):
     - React-Core
   - RNDeviceInfo (10.8.0):
     - React-Core
@@ -610,7 +610,7 @@ EXTERNAL SOURCES:
     :podspec: "../node_modules/react-native/third-party-podspecs/glog.podspec"
   hermes-engine:
     :podspec: "../node_modules/react-native/sdks/hermes-engine/hermes-engine.podspec"
-    :tag: ''
+    :tag: hermes-2023-03-20-RNv0.72.0-49794cfc7c81fb8f69fd60c3bbf85a7480cc5a77
   RCT-Folly:
     :podspec: "../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec"
   RCTRequired:
@@ -738,8 +738,8 @@ SPEC CHECKSUMS:
   React-runtimescheduler: 837c1bebd2f84572db17698cd702ceaf585b0d9a
   React-utils: bcb57da67eec2711f8b353f6e3d33bd8e4b2efa3
   ReactCommon: 3ccb8fb14e6b3277e38c73b0ff5e4a1b8db017a9
-  ReactNativeNavigation: 11f3907b9401a859f07ea5cfe82a1518b154f1e8
-  RNCAsyncStorage: f47fe18526970a69c34b548883e1aeceb115e3e1
+  ReactNativeNavigation: 2651d0bc1479e9df0789b077ae93320dc2c9b73b
+  RNCAsyncStorage: f57e929cd7757f2cb3dd8186d123c09e8281a1ad
   RNDeviceInfo: 5795b418ed3451ebcaf39384e6cf51f60cb931c9
   RNLocalize: dbea38dcb344bf80ff18a1757b1becf11f70cae4
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
