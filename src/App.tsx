@@ -179,6 +179,9 @@ export default function App({ componentId }: { componentId?: string }) {
                 </View>
               ))}
             </View>
+            <View style={styles.itemsContainer}>
+              <InputView />
+            </View>
             <View style={{ marginLeft: 30 }}>
               <Text>Session info:</Text>
               {Object.entries(JSON.parse(sessionInfo || '{}')).map(entry => (
@@ -199,9 +202,6 @@ export default function App({ componentId }: { componentId?: string }) {
                 </TouchableOpacity>
               </View>
             ))}
-            <View style={styles.itemsContainer}>
-              <InputView />
-            </View>
           </ScrollView>
         </SafeAreaView>
       </KeyboardAvoidingView>
