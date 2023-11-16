@@ -92,7 +92,7 @@ export default function App({ componentId }: { componentId?: string }) {
       text: (
         <>
           simulate react error
-          {isErrorComponentShown ? <div /> : null}
+          {isErrorComponentShown ? <reactErrorSimulation /> : null}
         </>
       ),
     },
@@ -104,7 +104,7 @@ export default function App({ componentId }: { componentId?: string }) {
             console.log(`fetched ${text.length} or so bytes of html`);
           });
         setTimeout(function standardPromiseRejectMethod() {
-          return Promise.reject('standard promise rejection');
+          return Promise.reject('Async promise rejection');
         }, 500);
       },
       text: 'simulate an http call and an async promise rejection ',
@@ -131,9 +131,15 @@ export default function App({ componentId }: { componentId?: string }) {
 
   return (
     <ErrorBoundary
-      fallback={() => (
+      fallback={({resetError}) => (
         <SafeAreaView style={styles.container}>
-          <Text>This is expected error, restart the app</Text>
+          <Text>This is expected error, click button below to reset</Text>
+          <TouchableOpacity style={styles.buyButton} onPress={() => {
+            setIsErrorComponentShown(false);
+            resetError()
+          }}>
+            <Text style={styles.whiteText}>Reset error</Text>
+          </TouchableOpacity>
         </SafeAreaView>
       )}>
       <KeyboardAvoidingView
