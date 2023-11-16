@@ -103,10 +103,9 @@ export default function App({ componentId }: { componentId?: string }) {
           .then(text => {
             console.log(`fetched ${text.length} or so bytes of html`);
           });
-        setTimeout(
-          () => Promise.reject(new Error('standard promise rejection')),
-          500,
-        );
+        setTimeout(function standardPromiseRejectMethod() {
+          return Promise.reject('standard promise rejection');
+        }, 500);
       },
       text: 'simulate an http call and an async promise rejection ',
     },
@@ -116,6 +115,7 @@ export default function App({ componentId }: { componentId?: string }) {
       text: <>Calculate storage used: {storageSize} bytes</>,
     },
     {
+      text: 'Clean local storage',
       action: async () => {
         const BrowserId = JSON.parse(
           (await Storage.getInstance().load(NOIBU_BROWSER_ID_KYWRD)) || '',
@@ -124,8 +124,8 @@ export default function App({ componentId }: { componentId?: string }) {
           NOIBU_BROWSER_ID_KYWRD,
           JSON.stringify({ BrowserId }),
         );
+        setStorageSize(await Storage.getInstance().calculateUsedSize());
       },
-      text: 'Clean local storage',
     },
   ];
 
