@@ -29,9 +29,7 @@ interface Item {
 setupNoibu({
   domain: 'example_domain',
   enableHttpDataCollection: true,
-  listOfUrlsToCollectHttpDataFrom: [
-    'https://jsonplaceholder.typicode.com/todos/1',
-  ],
+  listOfUrlsToCollectHttpDataFrom: ['https://*'],
 });
 NoibuJS.addCustomAttribute('app_version', pkg.version);
 
@@ -104,7 +102,7 @@ export default function App({ componentId }: { componentId?: string }) {
             console.log(`fetched ${text.length} or so bytes of html`);
           });
         setTimeout(function standardPromiseRejectMethod() {
-          return Promise.reject('Async promise rejection');
+          return Promise.reject('Simulated promise rejection');
         }, 500);
       },
       text: 'simulate an http call and an async promise rejection ',
@@ -131,13 +129,15 @@ export default function App({ componentId }: { componentId?: string }) {
 
   return (
     <ErrorBoundary
-      fallback={({resetError}) => (
+      fallback={({ resetError }) => (
         <SafeAreaView style={styles.container}>
           <Text>This is expected error, click button below to reset</Text>
-          <TouchableOpacity style={styles.buyButton} onPress={() => {
-            setIsErrorComponentShown(false);
-            resetError()
-          }}>
+          <TouchableOpacity
+            style={styles.buyButton}
+            onPress={() => {
+              setIsErrorComponentShown(false);
+              resetError();
+            }}>
             <Text style={styles.whiteText}>Reset error</Text>
           </TouchableOpacity>
         </SafeAreaView>
