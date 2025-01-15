@@ -9,15 +9,14 @@ import {
   Platform,
   Alert,
 } from 'react-native';
-import { styles } from './App.styles';
+import { Navigation } from 'react-native-navigation';
 import { ErrorBoundary, NoibuJS, setupNoibu } from 'noibu-react-native';
-import MetroplexSocket from 'noibu-react-native/dist/api/metroplexSocket';
-import Storage from 'noibu-react-native/dist/storage/storage';
-import * as Constants from 'noibu-react-native/dist/constants';
+import MetroplexSocket from 'noibu-react-native/dist/api/MetroplexSocket';
+import Storage from 'noibu-react-native/dist/storage/Storage';
+
+import { styles } from './App.styles';
 import InputView from './InputsView';
 import pkg from '../package.json';
-import { NOIBU_BROWSER_ID_KYWRD } from 'noibu-react-native/dist/constants';
-import { Navigation } from 'react-native-navigation';
 import { CartItem } from './ShoppingCart';
 
 interface Item {
@@ -27,13 +26,10 @@ interface Item {
 }
 
 setupNoibu({
-  domain: 'example_domain',
+  domain: 'react-native-testing.noibu.com',
   enableHttpDataCollection: true,
-  listOfUrlsToCollectHttpDataFrom: [
-    'https://jsonplaceholder.typicode.com/todos/1',
-  ],
-});
-NoibuJS.addCustomAttribute('app_version', pkg.version);
+  listOfUrlsToCollectHttpDataFrom: ['https://*'],
+}).then(() => NoibuJS.addCustomAttribute('app_version', pkg.version));
 
 export default function App({ componentId }: { componentId?: string }) {
   const [items] = useState<Record<Item['id'], Item>>({
@@ -46,9 +42,7 @@ export default function App({ componentId }: { componentId?: string }) {
   const [isErrorComponentShown, setIsErrorComponentShown] = useState(false);
 
   useEffect(() => {
-    Storage.getInstance()
-      .load<string>(Constants.NOIBU_BROWSER_ID_KYWRD)
-      .then(setSessionInfo);
+    Storage.getInstance().load('n_browser_data').then(setSessionInfo);
   }, [storageSize]);
 
   const handleBuy = (id: number) => {
@@ -75,7 +69,7 @@ export default function App({ componentId }: { componentId?: string }) {
     },
     {
       text: 'Simulate closed socket',
-      action: () => MetroplexSocket.getInstance().socket.close(1),
+      action: () => MetroplexSocket.getInstance().socket?.close?.(1),
     },
     {
       action: () => console.log(new Error('simulated console logged error')),
@@ -92,7 +86,7 @@ export default function App({ componentId }: { componentId?: string }) {
       text: (
         <>
           simulate react error
-          {isErrorComponentShown ? <div /> : null}
+          {isErrorComponentShown ? <reactErrorSimulation /> : null}
         </>
       ),
     },
@@ -103,10 +97,9 @@ export default function App({ componentId }: { componentId?: string }) {
           .then(text => {
             console.log(`fetched ${text.length} or so bytes of html`);
           });
-        setTimeout(
-          () => Promise.reject(new Error('standard promise rejection')),
-          500,
-        );
+        setTimeout(function standardPromiseRejectMethod() {
+          return Promise.reject('Simulated promise rejection');
+        }, 500);
       },
       text: 'simulate an http call and an async promise rejection ',
     },
@@ -116,24 +109,33 @@ export default function App({ componentId }: { componentId?: string }) {
       text: <>Calculate storage used: {storageSize} bytes</>,
     },
     {
+      text: 'Clean local storage',
       action: async () => {
         const BrowserId = JSON.parse(
-          (await Storage.getInstance().load(NOIBU_BROWSER_ID_KYWRD)) || '',
+          (await Storage.getInstance().load('n_browser_data')) || '',
         ).BrowserId;
         await Storage.getInstance().save(
-          NOIBU_BROWSER_ID_KYWRD,
+          'n_browser_data',
           JSON.stringify({ BrowserId }),
         );
+        setStorageSize(await Storage.getInstance().calculateUsedSize());
       },
-      text: 'Clean local storage',
     },
   ];
 
   return (
     <ErrorBoundary
-      fallback={() => (
+      fallback={({ resetError }) => (
         <SafeAreaView style={styles.container}>
-          <Text>This is expected error, restart the app</Text>
+          <Text>This is expected error, click button below to reset</Text>
+          <TouchableOpacity
+            style={styles.buyButton}
+            onPress={() => {
+              setIsErrorComponentShown(false);
+              resetError();
+            }}>
+            <Text style={styles.whiteText}>Reset error</Text>
+          </TouchableOpacity>
         </SafeAreaView>
       )}>
       <KeyboardAvoidingView
@@ -179,6 +181,9 @@ export default function App({ componentId }: { componentId?: string }) {
                 </View>
               ))}
             </View>
+            <View style={styles.itemsContainer}>
+              <InputView />
+            </View>
             <View style={{ marginLeft: 30 }}>
               <Text>Session info:</Text>
               {Object.entries(JSON.parse(sessionInfo || '{}')).map(entry => (
@@ -199,9 +204,6 @@ export default function App({ componentId }: { componentId?: string }) {
                 </TouchableOpacity>
               </View>
             ))}
-            <View style={styles.itemsContainer}>
-              <InputView />
-            </View>
           </ScrollView>
         </SafeAreaView>
       </KeyboardAvoidingView>
